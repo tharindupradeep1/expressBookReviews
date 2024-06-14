@@ -18,14 +18,14 @@ public_users.post("/register", (req,res) => {
       return res.status(401).json({Error:"Username already exists"});
     }else{
       users.push({"username":username, "password":password});
-      return res.status(200).json({Success:"User " + username + " added successfuly"});
+      return res.status(200).json({message:"Customer successfully registered. Now you can login."});
     }
   }
 });
 
 // Get the book list available in the shop
 public_users.get('/', (req, res) => {
-  return res.status(200).json(books);
+  return res.status(200).json({books: books});
 });
 
 
@@ -44,10 +44,16 @@ public_users.get('/isbn/:isbn',function (req, res) {
   return res.status(200).json(relevantBook);
  });
   
- async function getBookByISBN(){
-  const result = await axios.get("http://localhost:3000/isbn/1");
-  let book = result.data;
-  console.log(book);
+
+function getBookByISBN(url){
+  const req = axios.get("http://localhost:3000/isbn/1");
+  req.then(resp => {
+      let book = resp.data;
+      console.log(book);
+    })
+  .catch(err => {
+      console.log(err.toString())
+  });
 }
 
 
@@ -63,7 +69,7 @@ public_users.get('/author/:author',function (req, res) {
     }
   }
   if(booksForAuthor.length > 0){
-    return res.status(200).json({result : booksForAuthor});
+    return res.status(200).json({booksbyauthor : booksForAuthor});
   }else{
     return res.status(404).json("Author Not found");
   }
@@ -87,7 +93,7 @@ public_users.get('/title/:title',function (req, res) {
     }
   }
   if(booksForTitle.length > 0){
-    return res.status(200).json({result : booksForTitle});
+    return res.status(200).json({booksbytitle : booksForTitle});
   }else{
     return res.status(404).json("Title Not found");
   }
@@ -112,7 +118,7 @@ public_users.get('/review/:isbn',function (req, res) {
 });
 
 // getAllBookList();
-// getBookByISBN();
+getBookByISBN();
 // getBookByAuthor();
 // getBookDetailsByTitle();
 module.exports.general = public_users;

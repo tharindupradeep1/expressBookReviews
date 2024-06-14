@@ -33,7 +33,7 @@ regd_users.post("/login", (req,res) => {
         accessToken
       }
       req.session.username = username;
-      return res.status(200).send({Success:"User successfully logged in"});
+      return res.status(200).send({message:"Customer successfully logged in"});
     }else{
       return res.status(404).json({Error: "Username / password incorrect"});
     }
@@ -48,9 +48,9 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
   let user = req.session.username;
   let isbn = req.params.isbn;
   let book = books[isbn];
-  let review = req.body.review;
+  let review = req.query.review;
     book.reviews[user] = review;
-  return res.status(200).json({Success: "User review Added"});
+  return res.status(200).json({message: "Review for the book with ISBN " + isbn + " has successfully Added / Updated."});
 });
 
 regd_users.delete("/auth/review/:isbn", (req, res) => {
@@ -60,7 +60,7 @@ regd_users.delete("/auth/review/:isbn", (req, res) => {
   let userReview = book.reviews[user];
   if(userReview){
     delete book.reviews[user];
-    return res.status(200).json({Success: "User review deleted successfuly"});
+    return res.status(200).json({message: "Review for the ISBN " + isbn + " added by the user " + user + " deleted."});
   }else{
     return res.status(404).json({Failure:"No review for user found"});
   }
